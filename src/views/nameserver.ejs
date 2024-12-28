@@ -1,0 +1,97 @@
+<section class="py-4 py-md-5 my-5">
+    <div class="container py-md-5">
+        <div class="row">
+            <div class="col-md-6 text-center"><img class="img-fluid w-100" src="assets/img/illustrations/register.svg"></div>
+            <div class="col-md-5 col-xl-4 text-center text-md-start">
+                <h2 class="display-6 fw-bold mb-5"><span class="underline pb-1"><strong>Edit nameservers for <%- user.subdomain %>.<%- domain %></strong></span></h2>
+                <form data-bs-theme="light">
+                    <% for (let i = 0; i < 6; i++) { %>
+                        <div class="mb-3">
+                            NS <%- i + 1 %>: 
+                            <input class="shadow-sm form-control" 
+                                   type="text" 
+                                   id="ns<%- i + 1 %>" 
+                                   value="<%= (user.nameservers && user.nameservers[i] && user.nameservers[i].value) ? user.nameservers[i].value : '' %>" 
+                                   placeholder="<%= (user.nameservers && user.nameservers[i] && user.nameservers[i].value) ? '' : 'ns' + (i + 1) + '.example.com' %>">
+                        </div>
+                    <% } %>
+                    <div class="mb-5"><button class="btn btn-primary shadow" type="button" id="updateBtn" onclick="submitForm(event)">Update Nameservers</button></div>
+                </form>
+                <div class="mb-5"><a href="/auth/logout"><button class="btn btn-primary shadow">Logout</button></a></div>
+                <!-- <div class="mb-5"><button class="btn btn-primary shadow" type="button" onclick="deleteNameservers(event)">Delete Subdomain</button></div> -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function isValidDomain(domain) {
+        const domainRegex = /^(?!:\/\/)([a-zA-Z0-9-_]+\.)+[a-zA-Z]{2,}$/;
+        return domainRegex.test(domain);
+    }
+    function submitForm(event) {
+        const updateBtn = document.getElementById('updateBtn');
+        updateBtn.disabled = true;
+        event.preventDefault();
+        var nameservers = [];
+        for (let i = 1; i <= 6; i++) {
+            const ns = document.getElementById('ns' + i).value;
+            if (!ns) {
+                continue;
+            }
+            if (isValidDomain(ns)===false) {
+                alert('Invalid nameserver for index:' + i);
+                return;
+            }
+            nameservers.push(ns);
+        }
+        fetch('/api/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({nameservers: nameservers})
+        })
+        .then(response => {
+            return response.json().then(data => {
+                if (response.ok) {
+                    alert('Nameservers updated successfully');
+                    window.location.href = '/';
+                } else {
+                    alert(data.message || 'Something went wrong');
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while registering the subdomain');
+        });
+    }
+    // function deleteNameservers(event) {
+    //     window.confirm('Are you sure you want to delete the subdomain?');
+    //     if (!window.confirm) {
+    //         return;
+    //     }
+    //     event.preventDefault();
+    //     fetch('/api/delete', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         }
+    //     })
+    //     .then(response => {
+    //         return response.json().then(data => {
+    //             if (response.ok) {
+    //                 alert('Subdomain deleted successfully');
+    //                 window.location.href = '/';
+    //             } else {
+    //                 alert(data.message || 'Something went wrong');
+    //             }
+    //         });
+    //     })
+    //     .catch(error => {
+    //         console.error('Error:', error);
+    //         alert('An error occurred while deleting the subdomain');
+    //     });
+    // }
+</script>

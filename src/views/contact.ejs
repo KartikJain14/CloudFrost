@@ -1,0 +1,75 @@
+<section class="py-5 mt-5">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-md-8 col-xl-6 text-center mx-auto">
+                <h2 class="display-6 fw-bold mb-4">Got any <span class="underline">questions</span>?</h2>
+                <p class="text-muted">We are always here to help you. Send us a message and we'll get back to you shortly.</p>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-6">
+                <div>
+                    <form class="p-3 p-xl-4" data-bs-theme="light" id="contactForm">
+                        <div class="mb-3">
+                            <input class="shadow form-control" type="text" id="name" name="name" placeholder="Name"
+                                   value="<%= user && user.name ? user.name : '' %>" 
+                                   <%= user ? 'disabled' : '' %> required />
+                        </div>
+                        <div class="mb-3">
+                            <input class="shadow form-control" type="email" id="email" name="email" placeholder="email@yeezus.live"
+                                   value="<%= user && user.email ? user.email : '' %>" 
+                                   <%= user ? 'disabled' : '' %> required />
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="shadow form-control" id="message" name="message" rows="6" 
+                                      placeholder="Message" required></textarea>
+                        </div>
+                        <div>
+                            <button class="btn btn-primary shadow d-block w-100" type="button" onclick="submitForm(event)">
+                                Get Help
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function submitForm(event) {
+        event.preventDefault();
+        
+        // Grab the form and its fields
+        const form = document.getElementById('contactForm');
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const message = document.getElementById('message').value;
+
+        // Simple client-side validation
+        if (name && email && message) {
+            fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: name, email: email, message: message }),
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Message sent successfully');
+                    form.reset();  // Clears all form fields
+                } else {
+                    response.json().then(data => {
+                        alert(data.message || 'Something went wrong');
+                    });
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error.message);  // Handle network errors
+            });
+        } else {
+            alert('Please fill in all the fields');
+        }
+    }
+</script>
