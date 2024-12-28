@@ -1,0 +1,12 @@
+User-agent: *
+
+Crawl-delay: 10
+
+Allow: /$
+Allow: /contact
+Allow: /register
+Allow: /dashboard
+
+Disallow: *
+
+Sitemap: https://cloudfrost.yeezus.live/sitemap.xml

@@ -1,0 +1,2 @@
+If you find any flaw in the webapp, please report it at https://github.com/KartikJain14/CloudFrost/security and your contributions to solve them are welcome too.
+Thank you for supporting the open source community and being a responsible vulnerability discloser.
