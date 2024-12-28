@@ -5,7 +5,7 @@
   "main": "src/app.ts",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "build": "npx tsc -y && copyfiles -u 1 src/views/* dist/",
+    "build": "npx tsc && copyfiles -u 1 src/views/* dist/",
     "start": "node dist/server.js"
   },
   "repository": {
