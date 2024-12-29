@@ -18,7 +18,7 @@ export function isValidFQDN(fqdn: string): boolean {
 
 // Function to check if a string is a valid subdomain (used for nameservers)
 export function isValidSubdomain(subdomain: string): boolean {
-    const subdomainRegex = /^(?=.{3,60}$)[a-z0-9]+(-[a-z0-9]+)*$/;
+    const subdomainRegex = /^(?=.{3,63}$)(?![0-9]+$)(?!.*--)(?!.*-$)(?!^[-])([A-Za-z0-9-]{1,63}\.)+[A-Za-z0-9-]{2,20}$/;
     return subdomainRegex.test(subdomain);
 }
 
